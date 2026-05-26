@@ -6,7 +6,7 @@ from pydantic import BaseModel, Field, HttpUrl, EmailStr
 class PhoneNumberModel(BaseModel):
     number: str = Field(..., description="Номер телефону", min_length=5)
     description: Optional[str] = Field(None, description="Опис")
-    country: Optional[str] = Field(None, description="Країна")
+    country: Optional[str] = Field("Україна", description="Країна")
 
 
 class EmailModel(BaseModel):

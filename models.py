@@ -15,7 +15,7 @@ class Student(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     full_name: Mapped[str] = mapped_column(String(50))
     bio: Mapped[Optional[str]] = mapped_column(String(500), default=None, nullable=True)
-    classroom_id: Mapped[int] = mapped_column(ForeignKey("classrooms.id", ondelete="CASCADE"))
+    classroom_id: Mapped[Optional[int]] = mapped_column(ForeignKey("classrooms.id", ondelete="CASCADE"), default=None, nullable=True)
     classroom: Mapped["ClassRoom"] = relationship(back_populates="students")
 
 
