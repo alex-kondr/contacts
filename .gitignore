@@ -2,3 +2,5 @@
 /.vscode
 /students.db
 /__pycache__
+alembic.ini
+/alembic

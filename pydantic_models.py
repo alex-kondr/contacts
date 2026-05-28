@@ -15,7 +15,7 @@ class EmailModel(BaseModel):
 
 
 class PortfolioModel(BaseModel):
-    url: HttpUrl = Field(..., description="Веб-сторінка")
+    url: str = Field(..., description="Веб-сторінка")
     description: Optional[str] = Field(None, description="Опис")
 
 
@@ -27,9 +27,14 @@ class ContactModel(BaseModel):
     portfolio: Optional[PortfolioModel] = Field(None, description="Про себе")
 
 
+class ContactModelResponse(ContactModel):
+    id: int
+
+
 class StudentModel(BaseModel):
     full_name: str = Field(..., description="Ім'я")
     bio: Optional[str] = Field(None, description="Опис")
+    age: Optional[int] = Field(18, description="Вік")
 
 
 class StudentModelResponse(StudentModel):
@@ -38,11 +43,13 @@ class StudentModelResponse(StudentModel):
 
 class ClassRoomModel(BaseModel):
     students: List[StudentModel] = Field([])
-    description: Optional[str] = Field(None)
+    description: Optional[str] = Field(None, max_length=500)
+    subject: Optional[str] = Field(None, description="Назва тематичного класу", max_length=50)
 
 
 class ClassRoomModelResponse(ClassRoomModel):
     id: int = Field(...)
+    students: List[StudentModelResponse] = Field([])
 
 
 # student_1 = dict(

@@ -4,8 +4,8 @@ from fastapi import FastAPI, status, HTTPException, Query, Path, Depends
 from sqlalchemy.orm import Session
 import uvicorn
 
-from models import get_db, ClassRoom, Student
-from pydantic_models import StudentModel, ClassRoomModel, StudentModelResponse, ClassRoomModelResponse
+from models import get_db, ClassRoom, Student, Contact, Email, Portfolio, PhoneNumber
+from pydantic_models import StudentModel, ClassRoomModel, StudentModelResponse, ClassRoomModelResponse, ContactModelResponse, ContactModel
 
 
 app = FastAPI()
@@ -108,6 +108,29 @@ def delete_student_to_class(
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Не можливо видалити")
 
     classroom.students.remove(student)
+
+
+@app.post("/contacts/", response_model=ContactModelResponse, status_code=status.HTTP_201_CREATED)
+def app_contact(db: DBSession, contact_model: ContactModel):
+    contact = Contact(
+        first_name=contact_model.first_name,
+        last_name=contact_model.last_name
+    )
+    for phone_number_model in contact_model.numbers:
+        phone_number = PhoneNumber(**phone_number_model.model_dump())
+        contact.numbers.append(phone_number)
+
+    for email_model in contact_model.emails:
+        email = Email(**email_model.model_dump())
+        contact.emails.append(email)
+
+    portfolio = Portfolio(**contact_model.portfolio.model_dump())
+    contact.portfolio = portfolio
+
+    db.add(contact)
+    db.commit()
+    db.refresh(contact)
+    return contact
 
 
 if __name__ == "__main__":
